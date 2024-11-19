@@ -33,6 +33,18 @@ class User(db.Model, UserMixin):
 def home():
     return render_template('index.html')
 
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/register')
+def register_page():
+    return render_template('register.html')
+
+@app.route('/rag')
+def rag_page():
+    return render_template('chatbot.html')
+
 # Registration endpoint
 @app.route('/register', methods=['POST'])
 def register():

@@ -6,8 +6,9 @@
 </head>
 <body>
     <h1>Welcome to the Main Page</h1>
-    <a href="register.html"><button>Register</button></a>
-    <a href="login.html"><button>Login</button></a>
+    <a href="{{ url_for('register_page') }}"><button>Register</button></a>
+    <br><br>
+    <a href="{{ url_for('login_page') }}"><button>Login</button></a>
     <br><br>
     <!-- <a href="chatbot.html"><button>RAG Chatbot</button></a> -->
 </body>
