@@ -34,7 +34,6 @@ def register():
     email = data.get('email')
     password = data.get('password')
 
-    # Basic validation
     if not username or not email or not password:
         return jsonify({"message": "All fields are required"}), 400
     if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
@@ -42,7 +41,7 @@ def register():
     if len(password) < 8:
         return jsonify({"message": "Password must be at least 8 characters long"}), 400
 
-    # Hash the password and create a new user
+    # Hashing the password and create a new user
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(username=username, email=email, password=hashed_password)
     db.session.add(new_user)
