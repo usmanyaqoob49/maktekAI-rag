@@ -16,7 +16,7 @@ key= os.getenv("api_key")
 client = OpenAI(api_key= key)
 
 #pdf_loader
-pdf_loader= PyPDFLoader('pdf_files/Data cleaning.pdf')
+pdf_loader= PyPDFLoader('pdf_files/Usman-Yaqoob_AI-ML-DS.pdf')
 
 #now loading the pdf
 documents = pdf_loader.load()
@@ -43,3 +43,8 @@ q_and_a = RetrievalQA.from_chain_type(
 def get_answer(question):
     res= q_and_a({'query': question})    
     return res['result']
+
+
+q= 'what is role of person?'
+res= get_answer(q)
+print(res)

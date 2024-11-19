@@ -4,3 +4,5 @@ Flask-Bcrypt
 Flask-Login
 langchain
 dotenv
+numpy= 1.24.3
+chromadb
