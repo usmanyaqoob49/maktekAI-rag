@@ -77,11 +77,12 @@ def logout():
 def ask_question():
     data = request.get_json()
     question = data.get('question')
+    key= data.get('key')
 
     if not question:
         return jsonify({"error": "Question is required"}), 400
 
-    answer = get_answer(question)
+    answer = get_answer(question, key)
     return jsonify({"answer": answer})
 
 

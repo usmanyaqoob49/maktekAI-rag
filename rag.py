@@ -11,9 +11,6 @@ from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chains import RetrievalQA
 
-# load_dotenv()
-# key= os.getenv("api_key")
-
 #Function that will take file path and api key, will make a RAG chatbot and return the q_and_a chain 
 def make_rag(file_path, api_key):
     client = OpenAI(api_key= api_key)
@@ -49,7 +46,3 @@ def get_answer(question, key):
     res= q_and_a({'query': question})    
     return res['result']
 
-
-q= 'what is role of person?'
-res= get_answer(q, "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")
-print(res)
