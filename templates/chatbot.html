@@ -1,18 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="static/style.css">
     <title>Question and Answer</title>
 </head>
 <body>
     <h1>Chat-GPT Chat Bot</h1>
     <form id="questionForm">
-        <label for="question">Enter the Question you want to ask from the Chat-GPT: </label>
+        <label for="question">Enter the Question you want to ask from the Chat-GPT:</label>
         <input type="text" id="question" name="question" required>
         <br><br>
         
-        <label for="key">Enter your API Key: </label>
+        <label for="key">Enter your API Key:</label>
         <input type="text" id="key" name="key" required>
+        <br><br>
+        
+        <label for="file">Upload a PDF File:</label>
+        <input type="file" id="file" name="file" accept=".pdf" required>
         <br><br>
 
         <button type="submit">Get Answer</button>
@@ -30,18 +36,30 @@
 
             const question = document.getElementById('question').value;
             const key = document.getElementById('key').value;
+            const fileInput = document.getElementById('file').files[0];
+
+            // Ensure a file is selected
+            if (!fileInput) {
+                document.getElementById('answerText').innerText = "Please upload a PDF file.";
+                return;
+            }
+
+            // Create FormData to send data and file together
+            const formData = new FormData();
+            formData.append('question', question);
+            formData.append('api_key', key);
+            formData.append('file', fileInput);
 
             fetch('/rag', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ question: question, key: key })
+                body: formData
             })
             .then(response => response.json())
             .then(data => {
                 if (data.answer) {
                     document.getElementById('answerText').innerText = data.answer;
+                } else if (data.error) {
+                    document.getElementById('answerText').innerText = data.error;
                 } else {
                     document.getElementById('answerText').innerText = "No answer received.";
                 }

@@ -1,16 +1,18 @@
+import os
 from flask import Flask, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from datetime import timedelta
-from rag import get_answer
 from flask import render_template
+from rag import RAGChatbot  
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'helloworld123'  
+app.config['SECRET_KEY'] = 'helloworld123'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)  # 24-hour session timeout
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24) #24 hours session according to the task requirements
+app.config['UPLOAD_FOLDER'] = 'uploads'  
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -27,11 +29,9 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
-
 @app.route('/')
 def home():
     return render_template('index.html')
-
 
 # Registration endpoint
 @app.route('/register', methods=['POST'])
@@ -68,7 +68,7 @@ def login():
         return jsonify({"message": "Invalid credentials"}), 401
 
     login_user(user)
-    session.permanent = True  # session should expire after 24 hours as according to task description
+    session.permanent = True
 
     return jsonify({"message": "Logged in successfully"}), 200
 
@@ -79,21 +79,32 @@ def logout():
     logout_user()
     return jsonify({"message": "Logged out successfully"}), 200
 
-# API for Question answer from rag chatbot
+# API for Question Answering with RAG Chatbot
 @app.route('/rag', methods=['POST'])
 def ask_question():
-    data = request.get_json()
-    question = data.get('question')
-    key= data.get('key')
+    question = request.form.get('question')
+    api_key = request.form.get('api_key')
+    file = request.files.get('file')
 
     if not question:
         return jsonify({"error": "Question is required"}), 400
+    if not api_key:
+        return jsonify({"error": "API key is required"}), 400
+    if not file:
+        return jsonify({"error": "File is required"}), 400
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(file_path)
 
-    answer = get_answer(question, key)
+    try:
+        rag_chatbot = RAGChatbot(file_path, api_key)
+        answer = rag_chatbot.ask(question)
+    finally:
+        os.remove(file_path)
+    
     return jsonify({"answer": answer})
 
-
 if __name__ == '__main__':
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True) 
     with app.app_context():
-        db.create_all()  # Ensures tables are created before the server runs
+        db.create_all()
     app.run(debug=True)
