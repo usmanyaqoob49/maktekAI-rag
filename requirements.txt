@@ -6,3 +6,4 @@ langchain
 dotenv
 numpy== 1.24.3
 chromadb
+openai==1.25.0
