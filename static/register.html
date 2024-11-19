@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label>Username: <input type="text" id="username" required></label><br><br>
+        <label>Email: <input type="email" id="email" required></label><br><br>
+        <label>Password: <input type="password" id="password" required></label><br><br>
+        <button type="button" onclick="register()">Register</button>
+    </form>
+    <p id="registerMessage"></p>
+
+    <script>
+        function register() {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, email, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('registerMessage').textContent = data.message;
+            })
+            .catch(error => {
+                document.getElementById('registerMessage').textContent = 'An error occurred';
+            });
+        }
+    </script>
+</body>
+</html>

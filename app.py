@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'helloworld123'  
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)  # 24-hour session timeout as specified in taks
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)  # 24-hour session timeout
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -18,18 +18,14 @@ login_manager = LoginManager(app)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Database model for users (for the registration and login)
+# Database model for users
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-# Registration endpoint of application
+# Registration endpoint
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -37,7 +33,7 @@ def register():
     email = data.get('email')
     password = data.get('password')
 
-    # Basic validation as specified in the task
+    # Basic validation
     if not username or not email or not password:
         return jsonify({"message": "All fields are required"}), 400
     if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
@@ -45,7 +41,7 @@ def register():
     if len(password) < 8:
         return jsonify({"message": "Password must be at least 8 characters long"}), 400
 
-    # Hashing the pass and create a new user
+    # Hash the password and create a new user
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(username=username, email=email, password=hashed_password)
     db.session.add(new_user)
@@ -64,7 +60,7 @@ def login():
     if not user or not bcrypt.check_password_hash(user.password, password):
         return jsonify({"message": "Invalid credentials"}), 401
 
-    # Setting session with login and 24-hour timeout
+    # Set session with login and 24-hour timeout
     login_user(user)
     session.permanent = True  # session should expire after 24 hours
 
@@ -78,4 +74,6 @@ def logout():
     return jsonify({"message": "Logged out successfully"}), 200
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # Ensures tables are created before the server runs
     app.run(debug=True)
