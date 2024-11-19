@@ -28,7 +28,7 @@ class RAGChatbot:
         )
         self.vectordb.persist()
 
-        self.llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.5)
+        self.llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
         self.chain = load_qa_chain(self.llm, chain_type="stuff")
     
     # Method to ask a question and get an answer from the rag chatbot
