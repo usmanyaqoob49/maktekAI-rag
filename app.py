@@ -73,7 +73,7 @@ def logout():
     return jsonify({"message": "Logged out successfully"}), 200
 
 # API for Question answer from rag chatbot
-@app.route('/ask', methods=['POST'])
+@app.route('/rag', methods=['POST'])
 def ask_question():
     data = request.get_json()
     question = data.get('question')

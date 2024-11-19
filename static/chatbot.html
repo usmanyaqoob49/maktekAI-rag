@@ -6,28 +6,51 @@
 </head>
 <body>
     <h1>Chat-GPT Chat Bot</h1>
-    <form action="/get_chat_answer" method="POST">
-        <label for="message">Enter the Question you want to ask from the Chat-GPT: </label>
+    <form id="questionForm">
+        <label for="question">Enter the Question you want to ask from the Chat-GPT: </label>
         <input type="text" id="question" name="question" required>
         <br><br>
+        
+        <label for="key">Enter your API Key: </label>
+        <input type="text" id="key" name="key" required>
+        <br><br>
+
         <button type="submit">Get Answer</button>
     </form>
-    <br><br><br>
-</body>
-    <body>
-        <p>Question of the User: {{que}}</p>
-        <p><strong>Answer:</strong> {{ ans }}</p>
-        <br><br><br><br>
-        <!-- Add this code within your HTML template -->
-        <h2>Chatting History</h2>
-        <div id="chat-history">
-            {% for entry in hist %}
-            <p><strong>User:</strong> {{ entry["User's Question"] }}</p>
-            <p><strong>Chatbot Answer:</strong> {{ entry["ChatBot's Answer"] }}</p>
-            {% endfor %}
-        </div>
 
+    <br><br>
 
+    <div id="response">
+        <p><strong>Answer:</strong> <span id="answerText"></span></p>
+    </div>
+
+    <script>
+        document.getElementById('questionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const question = document.getElementById('question').value;
+            const key = document.getElementById('key').value;
+
+            fetch('/rag', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: question, key: key })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.answer) {
+                    document.getElementById('answerText').innerText = data.answer;
+                } else {
+                    document.getElementById('answerText').innerText = "No answer received.";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('answerText').innerText = "An error occurred.";
+            });
+        });
     </script>
 </body>
 </html>
