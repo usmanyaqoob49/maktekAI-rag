@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <title>Question and Answer</title>
+</head>
+<body>
+    <h1>Chat-GPT Chat Bot</h1>
+    <form action="/get_chat_answer" method="POST">
+        <label for="message">Enter the Question you want to ask from the Chat-GPT: </label>
+        <input type="text" id="question" name="question" required>
+        <br><br>
+        <button type="submit">Get Answer</button>
+    </form>
+    <br><br><br>
+</body>
+    <body>
+        <p>Question of the User: {{que}}</p>
+        <p><strong>Answer:</strong> {{ ans }}</p>
+        <br><br><br><br>
+        <!-- Add this code within your HTML template -->
+        <h2>Chatting History</h2>
+        <div id="chat-history">
+            {% for entry in hist %}
+            <p><strong>User:</strong> {{ entry["User's Question"] }}</p>
+            <p><strong>Chatbot Answer:</strong> {{ entry["ChatBot's Answer"] }}</p>
+            {% endfor %}
+        </div>
+
+
+    </script>
+</body>
+</html>
