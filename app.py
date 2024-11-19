@@ -29,7 +29,7 @@ class User(db.Model, UserMixin):
 def create_tables():
     db.create_all()
 
-# Registration endpoint
+# Registration endpoint of application
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -37,7 +37,7 @@ def register():
     email = data.get('email')
     password = data.get('password')
 
-    # Basic validation
+    # Basic validation as specified in the task
     if not username or not email or not password:
         return jsonify({"message": "All fields are required"}), 400
     if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
