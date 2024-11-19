@@ -17,7 +17,7 @@
         function login() {
             const username_or_email = document.getElementById('username_or_email').value;
             const password = document.getElementById('password').value;
-
+    
             fetch('/login', {
                 method: 'POST',
                 headers: {
@@ -28,7 +28,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.message === "Logged in successfully") {
-                    document.getElementById('loginMessage').textContent = "Login successful!";
+                    window.location.href = "/welcome";  // Redirect to the welcome page
                 } else {
                     document.getElementById('loginMessage').textContent = data.message;
                 }
@@ -38,5 +38,6 @@
             });
         }
     </script>
+    
 </body>
 </html>

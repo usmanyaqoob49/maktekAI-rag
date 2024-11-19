@@ -29,6 +29,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
+#All routes
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -41,8 +42,14 @@ def login_page():
 def register_page():
     return render_template('register.html')
 
-@app.route('/rag')
-def rag_page():
+@app.route('/welcome')
+@login_required  
+def welcome():
+    return render_template('welcome.html')
+
+@app.route('/rag_chatbot')
+@login_required  
+def rag_chatbot():
     return render_template('chatbot.html')
 
 # Registration endpoint
