@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from datetime import timedelta
 from rag import get_answer
+from flask import render_template
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'helloworld123'  
@@ -25,6 +26,12 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
 
 # Registration endpoint
 @app.route('/register', methods=['POST'])
