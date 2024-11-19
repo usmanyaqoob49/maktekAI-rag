@@ -16,7 +16,7 @@ key= os.getenv("api_key")
 client = OpenAI(api_key= key)
 
 #pdf_loader
-pdf_loader= PyPDFLoader('./Data cleaning.pdf')
+pdf_loader= PyPDFLoader('pdf_files/Data cleaning.pdf')
 
 #now loading the pdf
 documents = pdf_loader.load()
