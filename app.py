@@ -66,7 +66,7 @@ def login():
 
     # Setting session with login and 24-hour timeout
     login_user(user)
-    session.permanent = True  # session expiration after 24 hours
+    session.permanent = True  # session should expire after 24 hours
 
     return jsonify({"message": "Logged in successfully"}), 200
 
