@@ -50,7 +50,7 @@ def register():
 
     return jsonify({"message": "User registered successfully"}), 201
 
-# Login endpoint
+# Login endpoint for the user
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -61,9 +61,8 @@ def login():
     if not user or not bcrypt.check_password_hash(user.password, password):
         return jsonify({"message": "Invalid credentials"}), 401
 
-    # Set session with login and 24-hour timeout
     login_user(user)
-    session.permanent = True  # session should expire after 24 hours
+    session.permanent = True  # session should expire after 24 hours as according to task description
 
     return jsonify({"message": "Logged in successfully"}), 200
 
@@ -73,6 +72,19 @@ def login():
 def logout():
     logout_user()
     return jsonify({"message": "Logged out successfully"}), 200
+
+# API for Question answer from rag chatbot
+@app.route('/ask', methods=['POST'])
+def ask_question():
+    data = request.get_json()
+    question = data.get('question')
+
+    if not question:
+        return jsonify({"error": "Question is required"}), 400
+
+    answer = get_answer(question)
+    return jsonify({"answer": answer})
+
 
 if __name__ == '__main__':
     with app.app_context():
