@@ -45,7 +45,7 @@ def register():
     if len(password) < 8:
         return jsonify({"message": "Password must be at least 8 characters long"}), 400
 
-    # Hash the password and create a new user
+    # Hashing the pass and create a new user
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(username=username, email=email, password=hashed_password)
     db.session.add(new_user)
@@ -64,7 +64,7 @@ def login():
     if not user or not bcrypt.check_password_hash(user.password, password):
         return jsonify({"message": "Invalid credentials"}), 401
 
-    # Set session with login and 24-hour timeout
+    # Setting session with login and 24-hour timeout
     login_user(user)
     session.permanent = True  # session expiration after 24 hours
 
